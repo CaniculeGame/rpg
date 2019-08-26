@@ -1150,7 +1150,7 @@ PrefabInstance:
     - target: {fileID: 7994250068107136963, guid: 0755f3e28cff5fd4eb46c67fc0c30ac7,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7994250068107136963, guid: 0755f3e28cff5fd4eb46c67fc0c30ac7,
         type: 3}
@@ -1682,7 +1682,7 @@ PrefabInstance:
     - target: {fileID: 7994250068107136963, guid: 0755f3e28cff5fd4eb46c67fc0c30ac7,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7994250068107136963, guid: 0755f3e28cff5fd4eb46c67fc0c30ac7,
         type: 3}
@@ -2677,10 +2677,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1542560764}
   - {fileID: 304171676}
   - {fileID: 1905376510}
   - {fileID: 220859816}
+  - {fileID: 1542560764}
   - {fileID: 903249718}
   - {fileID: 1389465870}
   - {fileID: 1108032386}
@@ -8947,6 +8947,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 7994250068107136963, guid: 0755f3e28cff5fd4eb46c67fc0c30ac7,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6868650075112852720, guid: 0755f3e28cff5fd4eb46c67fc0c30ac7,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -10308,7 +10313,7 @@ PrefabInstance:
     - target: {fileID: 7994250068107136963, guid: 0755f3e28cff5fd4eb46c67fc0c30ac7,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7994250068107136963, guid: 0755f3e28cff5fd4eb46c67fc0c30ac7,
         type: 3}
@@ -10726,6 +10731,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82b2e0e3b1dfe084881943b4b8997033, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraOrho: {fileID: 1858793859}
+  cameraIso: {fileID: 963194227}
+  sensibilite: 0.1
 --- !u!1 &1990097205
 GameObject:
   m_ObjectHideFlags: 0

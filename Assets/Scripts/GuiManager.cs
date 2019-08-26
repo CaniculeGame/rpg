@@ -77,11 +77,15 @@ public class GuiManager : MonoBehaviour
         {
             cameras[0].gameObject.SetActive(false);
             cameras[1].gameObject.SetActive(true);
+
+            GameManage.DonnerInstance.CameraType = GameManage.CAMERA_TYPE.CAMERA_TYPE_ORTHO;
         }
         else
         {
             cameras[0].gameObject.SetActive(true);
             cameras[1].gameObject.SetActive(false);
+
+            GameManage.DonnerInstance.CameraType = GameManage.CAMERA_TYPE.CAMERA_TYPE_ISO;
         }
     }
 

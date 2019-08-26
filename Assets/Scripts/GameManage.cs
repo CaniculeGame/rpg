@@ -21,11 +21,21 @@ public class GameManage
         ROLE_MAX = 3
     }
 
+    public enum CAMERA_TYPE : int
+    {
+        CAMERA_TYPE_AUCUN = 0,
+        CAMERA_TYPE_ORTHO = 1,
+        CAMERA_TYPE_ISO = 2,
+        CAMERA_TYPE_MAX = 3
+    }
+
+
 
     /* notre unique instance */
     private static GameManage instance = null;
     private MODE mode = MODE.MODE_AUCUN;
     private ROLE roleJoueur = ROLE.ROLE_AUCUN;
+    private CAMERA_TYPE cameraType = CAMERA_TYPE.CAMERA_TYPE_AUCUN;
 
     /* constructeur */
     private GameManage()
@@ -64,5 +74,10 @@ public class GameManage
         set { mode = value; }
     }
 
+    public CAMERA_TYPE CameraType
+    {
+        get { return cameraType; }
+        set { cameraType = value; }
+    }
 
 }
