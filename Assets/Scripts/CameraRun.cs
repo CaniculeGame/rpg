@@ -63,17 +63,17 @@ public class CameraRun : MonoBehaviour
             mvt = Input.GetAxis("Mouse ScrollWheel");
             if (mvt < 0)
             {
-                if (zoomMax <= cameraIso.orthographicSize + mvt)
-                    cameraIso.orthographicSize = zoomMax;
+                if (zoomMax <= cameraOrho.orthographicSize + mvt)
+                    cameraOrho.orthographicSize = zoomMax;
                 else
-                    cameraIso.orthographicSize += (-1 * (mvt * sensibiliteZoom));
+                    cameraOrho.orthographicSize += (-1 * (mvt * sensibiliteZoom));
             }
             else
             {
-                if (zoomMin < cameraIso.orthographicSize - mvt)
-                    cameraIso.orthographicSize += (-1 * (mvt * sensibiliteZoom));
+                if (zoomMin < cameraOrho.orthographicSize - mvt)
+                    cameraOrho.orthographicSize += (-1 * (mvt * sensibiliteZoom));
                 else
-                    cameraIso.orthographicSize = zoomMin;
+                    cameraOrho.orthographicSize = zoomMin;
             }
         }
     }
