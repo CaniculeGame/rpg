@@ -24,7 +24,7 @@ public class GenerateWorld : MonoBehaviour
     {
         if (genericGround == null)
             return;
-
+        /*
         if (x <= 0 || y <= 0 || h == 0 || w == 0 || l == 0)
             return;
 
@@ -46,6 +46,48 @@ public class GenerateWorld : MonoBehaviour
             }
 
         }
+*/
+
+        string path;
+
+#if UNITY_ANDROID
+        path =;
+#else
+        path = Application.dataPath + "/Resources/Cartes/Carte1.txt";
+#endif
+
+        GameManage.DonnerInstance.ChargerCarte(path);
+
+        x = (int)GameManage.DonnerInstance.Carte.Xmax;
+        y = (int)GameManage.DonnerInstance.Carte.Ymax;
+
+        int origineX = -((x) / 2);
+        int origineY = -((y) / 2);
+
+        if (solGenerique == null)
+        {
+            solGenerique = new PoolObjects();
+            solGenerique.SetGameObject = genericGround;
+            solGenerique.SetParentGameObject = this.transform;
+        }
+
+
+        Carte carte = GameManage.DonnerInstance.Carte;
+        for (int i = 0; i < x; i++)
+        {
+            for (int j = 0; j < y; j++)
+            {
+                if (carte.DonnerCellule(i, j) != null &&
+                    carte.DonnerCellule(i, j).EstOccupe)
+                {
+                    int ht = carte.DonnerCellule(i, j).Hauteur;
+                    for(int a = 0; a <= ht; a++) 
+                        solGenerique.CreerObject(new Vector3(origineX + i * h, a, origineY + j * w), Quaternion.identity);
+                }
+            }
+
+        }
+
     }
 
     public GameObject Objet { set { aChanger = true; genericGround = value; } get { return genericGround; } }

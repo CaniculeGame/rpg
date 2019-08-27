@@ -36,6 +36,9 @@ public class GameManage
     private MODE mode = MODE.MODE_AUCUN;
     private ROLE roleJoueur = ROLE.ROLE_AUCUN;
     private CAMERA_TYPE cameraType = CAMERA_TYPE.CAMERA_TYPE_AUCUN;
+    private Carte carte = null;
+
+
 
     /* constructeur */
     private GameManage()
@@ -78,6 +81,17 @@ public class GameManage
     {
         get { return cameraType; }
         set { cameraType = value; }
+    }
+
+    public Carte Carte
+    {
+        get { return carte; }
+        set { carte = value; }
+    }
+
+    public void ChargerCarte(string path)
+    {
+        carte = new Carte(path);
     }
 
 }
