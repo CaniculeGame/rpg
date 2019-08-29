@@ -13,6 +13,17 @@ public class Cellule
         hauteur = 0;
     }
 
+    public string Element()
+    {
+        string str= "";
+        foreach (ElementGeneric elt in elements)
+        {
+            str += elt.DonnerTypeElement.ToString()+":"+elt.DonnerIdElement.ToString();
+        }
+
+        return str;
+    }
+
     public bool EstOccupe { get { return estOccupe; } }
     public int Hauteur { get { return hauteur; } set { hauteur = value; } }
 

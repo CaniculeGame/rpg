@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GuiManager : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class GuiManager : MonoBehaviour
     public GameObject jGui;
     public GameObject coGui;
     public GameObject createGui;
+    public GameObject newCarteGui;
 
     public Camera[] cameras;
 
@@ -17,6 +19,7 @@ public class GuiManager : MonoBehaviour
         mjGui.gameObject.SetActive(false);
         jGui.gameObject.SetActive(false);
         coGui.gameObject.SetActive(true);
+        newCarteGui.gameObject.SetActive(false);
     }
 
     public void StartJoueur()
@@ -34,11 +37,28 @@ public class GuiManager : MonoBehaviour
         mjGui.gameObject.SetActive(true);
         jGui.gameObject.SetActive(false);
         coGui.gameObject.SetActive(false);
+        newCarteGui.gameObject.SetActive(false);
 
         GameManage.DonnerInstance.Mode = GameManage.MODE.MODE_NORMAL;
         GameManage.DonnerInstance.Role = GameManage.ROLE.ROLE_MJ;
 
         mjGui.transform.GetChild(1).gameObject.SetActive(true);
+
+
+        string path;
+
+#if UNITY_ANDROID
+        path =;
+#else
+        path = Application.dataPath + "/Resources/Cartes/Carte1.txt";
+#endif
+
+        GameManage.DonnerInstance.ChargerCarte(path);
+    }
+
+    public void SaveCarte()
+    {
+        GameManage.DonnerInstance.SavegarderCarte(null);
     }
 
     public void ConstructionMode()
@@ -95,6 +115,7 @@ public class GuiManager : MonoBehaviour
         mjGui.gameObject.SetActive(false);
         jGui.gameObject.SetActive(false);
         coGui.gameObject.SetActive(true);
+        newCarteGui.gameObject.SetActive(false);
 
         GameManage.DonnerInstance.Mode = GameManage.MODE.MODE_AUCUN;
         GameManage.DonnerInstance.Role = GameManage.ROLE.ROLE_AUCUN;
@@ -113,5 +134,38 @@ public class GuiManager : MonoBehaviour
     {
         jGui.transform.GetChild(1).gameObject.SetActive(false);
         jGui.transform.GetChild(0).gameObject.SetActive(true);
+    }
+
+
+    public void AfficherCreerCarte()
+    {
+        mjGui.gameObject.SetActive(false);
+        jGui.gameObject.SetActive(false);
+        coGui.gameObject.SetActive(false);
+        newCarteGui.gameObject.SetActive(true);
+    }
+
+    public void CreerCarte()
+    {
+        mjGui.gameObject.SetActive(true);
+        jGui.gameObject.SetActive(false);
+        coGui.gameObject.SetActive(false);
+        newCarteGui.gameObject.SetActive(false);
+
+        uint x = uint.Parse(newCarteGui.transform.GetChild(3).GetChild(2).GetComponent<Text>().text);
+        uint y = uint.Parse(newCarteGui.transform.GetChild(4).GetChild(2).GetComponent<Text>().text);
+        string nom = newCarteGui.transform.GetChild(5).GetChild(2).GetComponent<Text>().text;
+
+        Carte newCarte = new Carte(null,nom,x, y);
+        GameManage.DonnerInstance.NouvelleCarte(newCarte);
+
+    }
+
+    public void CacherCreerCarte()
+    {
+        mjGui.gameObject.SetActive(true);
+        jGui.gameObject.SetActive(false);
+        coGui.gameObject.SetActive(false);
+        newCarteGui.gameObject.SetActive(false);
     }
 }

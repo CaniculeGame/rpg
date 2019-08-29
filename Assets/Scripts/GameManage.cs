@@ -29,6 +29,13 @@ public class GameManage
         CAMERA_TYPE_MAX = 3
     }
 
+    public enum ACTION_TYPE : int
+    {
+        ACTION_TYPE_AUCUN = 0,
+        ACTION_TYPE_CHANGEMENT_CARTE = 1,
+        ACTION_TYPE_SAUVEGARDER_CARTE = 2
+    }
+
 
 
     /* notre unique instance */
@@ -36,6 +43,7 @@ public class GameManage
     private MODE mode = MODE.MODE_AUCUN;
     private ROLE roleJoueur = ROLE.ROLE_AUCUN;
     private CAMERA_TYPE cameraType = CAMERA_TYPE.CAMERA_TYPE_AUCUN;
+    private ACTION_TYPE actionType = ACTION_TYPE.ACTION_TYPE_AUCUN;
     private Carte carte = null;
 
 
@@ -83,6 +91,12 @@ public class GameManage
         set { cameraType = value; }
     }
 
+    public ACTION_TYPE Action
+    {
+        get { return actionType; }
+        set { actionType = value; }
+    }
+
     public Carte Carte
     {
         get { return carte; }
@@ -92,6 +106,20 @@ public class GameManage
     public void ChargerCarte(string path)
     {
         carte = new Carte(path);
+        actionType = ACTION_TYPE.ACTION_TYPE_CHANGEMENT_CARTE;
     }
+
+    public void SavegarderCarte(string path)
+    {
+        carte.SavegarderFichierCarte(path);
+    }
+
+    public void NouvelleCarte(Carte crte)
+    {
+
+        carte = null;
+        carte = crte;
+    }
+
 
 }

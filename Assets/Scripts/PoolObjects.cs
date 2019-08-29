@@ -16,6 +16,15 @@ public class PoolObjects
     private Stack<GameObject> stackObj;
 
 
+    public void SupprimerTousLesObjets(string tag)
+    {
+        for(int i =0; i < parent.childCount; i++)
+        {
+            if(parent.GetChild(i).tag == tag)
+                SupprimerObject(parent.GetChild(i).gameObject);
+        }
+    }
+
     // appeler cette fonction quand l'obj n'est plus utilisé
     public void SupprimerObject(GameObject obj)
     {

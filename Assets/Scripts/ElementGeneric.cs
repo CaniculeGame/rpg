@@ -14,6 +14,7 @@
     private uint idElment;
 
 
+    public uint DonnerIdElement { get { return idElment; } }
     public TYPE_ELEMENT DonnerTypeElement { get { return typeElement; }}
     public void AjouterElement(TYPE_ELEMENT element) { typeElement = element; }
 

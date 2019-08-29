@@ -20,43 +20,22 @@ public class GenerateWorld : MonoBehaviour
     private PoolObjects solGenerique;
     private PoolObjects grid;
 
+    public void ViderWorld()
+    {
+        if(solGenerique != null )
+            solGenerique.SupprimerTousLesObjets("ground");
+
+        if (grid != null)
+            grid.SupprimerTousLesObjets("grid");
+    }
+
     private void GenerateGrid()
     {
         if (genericGround == null)
             return;
-        /*
-        if (x <= 0 || y <= 0 || h == 0 || w == 0 || l == 0)
+
+        if (GameManage.DonnerInstance.Carte == null)
             return;
-
-        int origineX = -((x) / 2);
-        int origineY = -((y) / 2);
-
-        if (solGenerique == null)
-        {
-            solGenerique = new PoolObjects();
-            solGenerique.SetGameObject = genericGround;
-            solGenerique.SetParentGameObject = this.transform;
-        }
-
-        for (int i = 0; i < x; i++)
-        {
-            for (int j = 0; j < y; j++)
-            {
-                solGenerique.CreerObject(new Vector3(origineX +  i *h, 0, origineY +  j *w), Quaternion.identity);
-            }
-
-        }
-*/
-
-        string path;
-
-#if UNITY_ANDROID
-        path =;
-#else
-        path = Application.dataPath + "/Resources/Cartes/Carte1.txt";
-#endif
-
-        GameManage.DonnerInstance.ChargerCarte(path);
 
         x = (int)GameManage.DonnerInstance.Carte.Xmax;
         y = (int)GameManage.DonnerInstance.Carte.Ymax;
@@ -114,6 +93,9 @@ public class GenerateWorld : MonoBehaviour
 
         if (GameManage.DonnerInstance.Role == GameManage.ROLE.ROLE_JOUEUR)
             AfficherGrid(false);
+
+        if (GameManage.DonnerInstance.Action == GameManage.ACTION_TYPE.ACTION_TYPE_CHANGEMENT_CARTE)
+        { aChanger = true; ViderWorld(); GameManage.DonnerInstance.Action = GameManage.ACTION_TYPE.ACTION_TYPE_AUCUN; }
 
         if (aChanger)
         {
