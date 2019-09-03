@@ -106,7 +106,7 @@ public class GenerateWorld : MonoBehaviour
 
         if (GameManage.DonnerInstance.Mode == GameManage.MODE.MODE_CONSTRUCTION )
         {
-
+            Carte carte = GameManage.DonnerInstance.Carte;
             if (Input.GetMouseButtonUp(0) || Input.touchCount > 0)
             {
                 Vector3 position;
@@ -116,6 +116,8 @@ public class GenerateWorld : MonoBehaviour
 #else
                 position = Input.mousePosition;
 #endif
+                int i = 0;
+                int j = 0;
                 Transform obj = SelectObjet(position);
                 if (obj != null && obj.tag == "grid")
                 {
@@ -127,7 +129,12 @@ public class GenerateWorld : MonoBehaviour
                 else if (obj != null && obj.tag == "ground")
                 {
                     Vector3 newPos = obj.position;
-                    newPos.y = 1;
+                    i = (int)Mathf.Abs(newPos.x);
+                    j = (int)Mathf.Abs(newPos.z);
+                   
+                    
+                    newPos.y = carte.DonnerCellule(i,j).Hauteur;
+                    carte.DonnerCellule(i,j).Hauteur++;
                     solGenerique.CreerObject(newPos, Quaternion.identity);
                 }
 
@@ -142,8 +149,8 @@ public class GenerateWorld : MonoBehaviour
                     newPos.y = -0.5f;
                     grid.CreerObject(newPos, Quaternion.identity);
 
-                    // A faire: si en dessous il y a autre chise qu'un cube
-                        solGenerique.SupprimerObject(obj.gameObject);
+                    // A faire: si en dessous il y a autre chose qu'un cube
+                    solGenerique.SupprimerObject(obj.gameObject);
                 }
             }
         }

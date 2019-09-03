@@ -137,6 +137,11 @@ public class Carte
         if (x >= maxX || y >= maxY)
             return null;
 
+        if(carte[x,y] == null)
+        {
+            carte[x, y] = new Cellule();
+        }
+
         return carte[x, y];
     }
 
