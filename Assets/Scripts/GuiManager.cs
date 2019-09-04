@@ -7,8 +7,11 @@ public class GuiManager : MonoBehaviour
 {
     public GameObject mjGui;
     public GameObject jGui;
-    public GameObject coGui;
-    public GameObject createGui;
+    public GameObject mainGui;
+    public GameObject connectionGui;
+    public GameObject choixPersoGui;
+    public GameObject creationMJGui;
+    public GameObject creationJoueurGui;
     public GameObject newCarteGui;
 
     public Camera[] cameras;
@@ -18,15 +21,25 @@ public class GuiManager : MonoBehaviour
     {
         mjGui.gameObject.SetActive(false);
         jGui.gameObject.SetActive(false);
-        coGui.gameObject.SetActive(true);
+        mainGui.gameObject.SetActive(true);
         newCarteGui.gameObject.SetActive(false);
+
+        choixPersoGui.gameObject.SetActive(false);
+        creationMJGui.gameObject.SetActive(false);
+        creationJoueurGui.gameObject.SetActive(false);
+        connectionGui.gameObject.SetActive(true);
     }
 
     public void StartJoueur()
     {
         mjGui.gameObject.SetActive(false);
         jGui.gameObject.SetActive(true);
-        coGui.gameObject.SetActive(false);
+        mainGui.gameObject.SetActive(false);
+
+        choixPersoGui.gameObject.SetActive(false);
+        creationMJGui.gameObject.SetActive(false);
+        creationJoueurGui.gameObject.SetActive(false);
+        connectionGui.gameObject.SetActive(false);
 
         GameManage.DonnerInstance.Mode = GameManage.MODE.MODE_NORMAL;
         GameManage.DonnerInstance.Role = GameManage.ROLE.ROLE_JOUEUR;
@@ -36,8 +49,13 @@ public class GuiManager : MonoBehaviour
     {
         mjGui.gameObject.SetActive(true);
         jGui.gameObject.SetActive(false);
-        coGui.gameObject.SetActive(false);
+        mainGui.gameObject.SetActive(false);
         newCarteGui.gameObject.SetActive(false);
+
+        choixPersoGui.gameObject.SetActive(false);
+        creationMJGui.gameObject.SetActive(false);
+        creationJoueurGui.gameObject.SetActive(false);
+        connectionGui.gameObject.SetActive(false);
 
         GameManage.DonnerInstance.Mode = GameManage.MODE.MODE_NORMAL;
         GameManage.DonnerInstance.Role = GameManage.ROLE.ROLE_MJ;
@@ -114,8 +132,13 @@ public class GuiManager : MonoBehaviour
     {
         mjGui.gameObject.SetActive(false);
         jGui.gameObject.SetActive(false);
-        coGui.gameObject.SetActive(true);
+        mainGui.gameObject.SetActive(true);
         newCarteGui.gameObject.SetActive(false);
+
+        choixPersoGui.gameObject.SetActive(false);
+        creationMJGui.gameObject.SetActive(false);
+        creationJoueurGui.gameObject.SetActive(false);
+        connectionGui.gameObject.SetActive(true);
 
         GameManage.DonnerInstance.Mode = GameManage.MODE.MODE_AUCUN;
         GameManage.DonnerInstance.Role = GameManage.ROLE.ROLE_AUCUN;
@@ -141,7 +164,7 @@ public class GuiManager : MonoBehaviour
     {
         mjGui.gameObject.SetActive(false);
         jGui.gameObject.SetActive(false);
-        coGui.gameObject.SetActive(false);
+        mainGui.gameObject.SetActive(false);
         newCarteGui.gameObject.SetActive(true);
     }
 
@@ -149,7 +172,7 @@ public class GuiManager : MonoBehaviour
     {
         mjGui.gameObject.SetActive(true);
         jGui.gameObject.SetActive(false);
-        coGui.gameObject.SetActive(false);
+        mainGui.gameObject.SetActive(false);
         newCarteGui.gameObject.SetActive(false);
 
         uint x = uint.Parse(newCarteGui.transform.GetChild(3).GetChild(2).GetComponent<Text>().text);
@@ -165,7 +188,100 @@ public class GuiManager : MonoBehaviour
     {
         mjGui.gameObject.SetActive(true);
         jGui.gameObject.SetActive(false);
-        coGui.gameObject.SetActive(false);
+        mainGui.gameObject.SetActive(false);
         newCarteGui.gameObject.SetActive(false);
     }
+
+
+    public void AfficherConnection()
+    {
+        mjGui.gameObject.SetActive(false);
+        jGui.gameObject.SetActive(false);
+        mainGui.gameObject.SetActive(true);
+        newCarteGui.gameObject.SetActive(false);
+
+        choixPersoGui.gameObject.SetActive(false);
+        creationMJGui.gameObject.SetActive(false);
+        creationJoueurGui.gameObject.SetActive(false);
+        connectionGui.gameObject.SetActive(true);
+    }
+
+    public void CacherConnection()
+    {
+
+    }
+
+
+    public void CacherCreationMj()
+    {
+
+    }
+
+    public void AfficherCreationMj()
+    {
+        mjGui.gameObject.SetActive(false);
+        jGui.gameObject.SetActive(false);
+        mainGui.gameObject.SetActive(true);
+        newCarteGui.gameObject.SetActive(false);
+
+        choixPersoGui.gameObject.SetActive(false);
+        creationMJGui.gameObject.SetActive(true);
+        creationJoueurGui.gameObject.SetActive(false);
+        connectionGui.gameObject.SetActive(false);
+    }
+
+    public void CacherCreationJoueur()
+    {
+
+    }
+
+    public void AfficherCreationJoueur()
+    {
+        mjGui.gameObject.SetActive(false);
+        jGui.gameObject.SetActive(false);
+        mainGui.gameObject.SetActive(true);
+        newCarteGui.gameObject.SetActive(false);
+
+        choixPersoGui.gameObject.SetActive(false);
+        creationMJGui.gameObject.SetActive(false);
+        creationJoueurGui.gameObject.SetActive(true);
+        connectionGui.gameObject.SetActive(false);
+    }
+
+
+    public void CacherChoixPersonnage()
+    {
+
+    }
+
+    public void AfficherChoixPersonnage()
+    {
+        mjGui.gameObject.SetActive(false);
+        jGui.gameObject.SetActive(false);
+        mainGui.gameObject.SetActive(true);
+        newCarteGui.gameObject.SetActive(false);
+
+        choixPersoGui.gameObject.SetActive(true);
+        creationMJGui.gameObject.SetActive(false);
+        creationJoueurGui.gameObject.SetActive(false);
+        connectionGui.gameObject.SetActive(false);
+    }
+
+
+    public void Connection()
+    {
+
+        AfficherChoixPersonnage();
+    }
+
+    public void Deconnection()
+    {
+
+        AfficherConnection();
+    }
+
+
+
+
+
 }
