@@ -1,67 +1,65 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GenerateWorld : MonoBehaviour
 {
-    public GameObject genericGround;
-    public GameObject plane;
+    public enum TYPE_OBJET : int
+    {
+        TYPE_OBJET_1 = 0,
+        TYPE_OBJET_2 = 1,
+        TYPE_OBJET_3 = 2,
+        TYPE_OBJET_4 = 3,
+        TYPE_OBJET_MAX
+    }
 
-    public int x = 10;
-    public int y = 10;
-    public int h = 1;
-    public int w = 1;
-    public int l = 1;
+
+    public GameObject plane;
+    public GameObject[] decors;
+
+    public int _x = 10;
+    public int _y = 10;
+    public int _h = 1;
+    public int _w = 1;
+    public int _l = 1;
 
     public bool montrerQuadrillage = true;
     public bool aChanger = false;
     private bool grilleEstAfficher = false;
+    private int objSelection = -1;
 
-    private PoolObjects solGenerique;
     private PoolObjects grid;
+    private PoolObjects[] decorsPool;
 
     public void ViderWorld()
     {
-        if(solGenerique != null )
-            solGenerique.SupprimerTousLesObjets("ground");
-
         if (grid != null)
             grid.SupprimerTousLesObjets("grid");
     }
 
     private void GenerateGrid()
     {
-        if (genericGround == null)
-            return;
 
         if (GameManage.DonnerInstance.Carte == null)
             return;
 
-        x = (int)GameManage.DonnerInstance.Carte.Xmax;
-        y = (int)GameManage.DonnerInstance.Carte.Ymax;
+        _x = (int)GameManage.DonnerInstance.Carte.Xmax;
+        _y = (int)GameManage.DonnerInstance.Carte.Ymax;
 
-        int origineX = -((x) / 2);
-        int origineY = -((y) / 2);
-
-        if (solGenerique == null)
-        {
-            solGenerique = new PoolObjects();
-            solGenerique.SetGameObject = genericGround;
-            solGenerique.SetParentGameObject = this.transform;
-        }
+        int origineX = -((_x) / 2);
+        int origineY = -((_y) / 2);
 
 
         Carte carte = GameManage.DonnerInstance.Carte;
-        for (int i = 0; i < x; i++)
+        for (int i = 0; i < _x; i++)
         {
-            for (int j = 0; j < y; j++)
+            for (int j = 0; j < _y; j++)
             {
                 if (carte.DonnerCellule(i, j) != null &&
                     carte.DonnerCellule(i, j).EstOccupe)
                 {
                     int ht = carte.DonnerCellule(i, j).Hauteur;
-                    for(int a = 0; a <= ht; a++) 
-                        solGenerique.CreerObject(new Vector3(origineX + i * h, a, origineY + j * w), Quaternion.identity);
                 }
             }
 
@@ -69,12 +67,12 @@ public class GenerateWorld : MonoBehaviour
 
     }
 
-    public GameObject Objet { set { aChanger = true; genericGround = value; } get { return genericGround; } }
-    public int X { set { aChanger = true; x = value; } get { return x; } }
-    public int Y { set { aChanger = true; y = value; } get { return y; } }
-    public int H { set { aChanger = true; h = value; } get { return h; } }
-    public int W { set { aChanger = true; w = value; } get { return w; } }
-    public int L { set { aChanger = true; l = value; } get { return l; } }
+
+    public int X { set { aChanger = true; _x = value; } get { return _x; } }
+    public int Y { set { aChanger = true; _y = value; } get { return _y; } }
+    public int H { set { aChanger = true; _h = value; } get { return _h; } }
+    public int W { set { aChanger = true; _w = value; } get { return _w; } }
+    public int L { set { aChanger = true; _l = value; } get { return _l; } }
 
     // Start is called before the first frame update
     void Start()
@@ -83,6 +81,23 @@ public class GenerateWorld : MonoBehaviour
 
         if (montrerQuadrillage)
             ShowGrid(true);
+
+        if (decors == null)
+            return;
+
+        if (decorsPool == null)
+            decorsPool = new PoolObjects[decors.Length];
+
+
+        for(int i = 0; i < decorsPool.Length; i++)
+        {
+            if (decorsPool[i] == null && decors != null && decors.Length >= i)
+            {
+                decorsPool[i] = new PoolObjects();
+                decorsPool[i].SetGameObject = decors[i];
+                decorsPool[i].SetParentGameObject = this.transform;
+            }
+        }
     }
 
     // Update is called once per frame
@@ -95,7 +110,13 @@ public class GenerateWorld : MonoBehaviour
             AfficherGrid(false);
 
         if (GameManage.DonnerInstance.Action == GameManage.ACTION_TYPE.ACTION_TYPE_CHANGEMENT_CARTE)
-        { aChanger = true; ViderWorld(); GameManage.DonnerInstance.Action = GameManage.ACTION_TYPE.ACTION_TYPE_AUCUN; }
+        {
+            aChanger = true;
+            ViderWorld();
+            SupprimerTerrain();
+            NouveauTerrain();
+            GameManage.DonnerInstance.Action = GameManage.ACTION_TYPE.ACTION_TYPE_AUCUN;
+        }
 
         if (aChanger)
         {
@@ -104,8 +125,11 @@ public class GenerateWorld : MonoBehaviour
         }
 
 
-        if (GameManage.DonnerInstance.Mode == GameManage.MODE.MODE_CONSTRUCTION )
+        if (GameManage.DonnerInstance.Mode == GameManage.MODE.MODE_CONSTRUCTION)
         {
+            if (!grilleEstAfficher)
+                ShowGrid(true);
+
             Carte carte = GameManage.DonnerInstance.Carte;
             if (Input.GetMouseButtonUp(0) || Input.touchCount > 0)
             {
@@ -116,26 +140,19 @@ public class GenerateWorld : MonoBehaviour
 #else
                 position = Input.mousePosition;
 #endif
-                int i = 0;
-                int j = 0;
-                Transform obj = SelectObjet(position);
-                if (obj != null && obj.tag == "grid")
+
+                if (objSelection != -1)
                 {
-                    Vector3 newPos = obj.position;
-                    newPos.y = 0;
-                    solGenerique.CreerObject(newPos, Quaternion.identity);
-                    grid.SupprimerObject(obj.gameObject);
-                }
-                else if (obj != null && obj.tag == "ground")
-                {
-                    Vector3 newPos = obj.position;
-                    i = (int)Mathf.Abs(newPos.x);
-                    j = (int)Mathf.Abs(newPos.z);
-                   
-                    
-                    newPos.y = carte.DonnerCellule(i,j).Hauteur;
-                    carte.DonnerCellule(i,j).Hauteur++;
-                    solGenerique.CreerObject(newPos, Quaternion.identity);
+                    Transform obj = SelectObjet(position);
+                    if (obj != null && obj.tag == "grid")
+                    {
+                        Vector3 newPos = obj.position;
+                        InstanciateObjet((TYPE_OBJET)objSelection, newPos);
+
+                        int x = Mathf.FloorToInt(newPos.x);
+                        int y = Mathf.FloorToInt(newPos.z);
+                        carte.DonnerCellule(x, y).AjouterElement(new ElementGeneric(ElementGeneric.TYPE_ELEMENT.TYPE_ELEMENT_OBJET, (uint)objSelection));
+                    }
                 }
 
             }
@@ -143,18 +160,54 @@ public class GenerateWorld : MonoBehaviour
             {
                 Vector3 position = Input.mousePosition;
                 Transform obj = SelectObjet(position);
-                if (obj != null && obj.tag == "ground")
+                if (obj != null && obj.tag == "decor")
                 {
-                    Vector3 newPos = obj.position;
-                    newPos.y = -0.5f;
-                    grid.CreerObject(newPos, Quaternion.identity);
-
-                    // A faire: si en dessous il y a autre chose qu'un cube
-                    solGenerique.SupprimerObject(obj.gameObject);
+                    DetruireObjet(obj);
                 }
             }
         }
 
+    }
+
+    private void DetruireObjet(Transform obj)
+    {
+        if (obj == null)
+            return;
+
+        ElementGeneric elt = obj.GetComponent<ElementGeneric>();
+        if (elt == null)
+            return;
+
+        int id = (int)elt.DonnerIdElement;
+        ElementGeneric.TYPE_ELEMENT type = ElementGeneric.TYPE_ELEMENT.TYPE_ELEMENT_OBJET;
+
+        switch (type)
+        {
+            case ElementGeneric.TYPE_ELEMENT.TYPE_ELEMENT_OBJET:
+                if (id >= 0 && id < decorsPool.Length)
+                    decorsPool[id].SupprimerObject(obj.gameObject);
+            break;
+
+            default:
+                break;
+        }
+    }
+
+    private void SupprimerTerrain()
+    {
+        GameObject.Destroy(GameObject.Find("Terrain"));
+    }
+
+    private void NouveauTerrain()
+    {
+        Carte carte = GameManage.DonnerInstance.Carte;
+        if (carte == null)
+            return;
+
+        Vector3 position = new Vector3(0, 0, 0);
+        TerrainData terrainData = new TerrainData();
+        terrainData.size = new Vector3(carte.Xmax, 100, carte.Ymax);
+        GameObject terrain = Terrain.CreateTerrainGameObject(terrainData);
     }
 
     public void AfficherGrid(bool afficher)
@@ -172,7 +225,7 @@ public class GenerateWorld : MonoBehaviour
 
     private void ShowGrid(bool afficher)
     {
-        int mult = 2;
+        int mult = 1;
 
         if (grid == null)
         {
@@ -185,14 +238,14 @@ public class GenerateWorld : MonoBehaviour
 
         if (afficher)
         {
-            int origineX = -((x * mult) / 2);
-            int origineY = -((y * mult) / 2);
+            float origineX = 0.5f;
+            float origineY = 0.5f;
 
-            for (int i = 0; i < x * mult; i++)
+            for (int i = 0; i < _x * mult; i++)
             {
-                for (int j = 0; j < y * mult; j++)
+                for (int j = 0; j < _y * mult; j++)
                 {
-                        grid.CreerObject(new Vector3(origineX + i * h, -w/2.0f, origineY + j * w), Quaternion.identity);
+                        grid.CreerObject(new Vector3(origineX + i * _h, 0.1f, origineY + j * _w), Quaternion.identity);
                 }
             }
         }
@@ -212,11 +265,10 @@ public class GenerateWorld : MonoBehaviour
     {
         Transform obj = null;
 
-        // Did we hit the surface?
         Ray ray = Camera.main.ScreenPointToRay(position);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 100))
+        if (Physics.Raycast(ray, out hit, 200))
             obj = hit.transform;
 
 
@@ -224,20 +276,28 @@ public class GenerateWorld : MonoBehaviour
     }
 
 
-
-    public void CreerBlock()
+    public void SelectionnerObjet(int idObj)
     {
-        if (solGenerique == null)
-            return;
-
-        solGenerique.CreerObject(Vector3.zero, Quaternion.identity);
-
+        objSelection = idObj;
     }
 
-    public void SupprimerBlock()
+
+    public void DeselectionnerObjet()
     {
-        if (solGenerique == null)
+        objSelection = -1;
+    }
+
+
+
+    public void InstanciateObjet(TYPE_OBJET typeObj,  Vector3 position)
+    {
+        if (decorsPool == null)
             return;
+
+        if ((int)typeObj >= decorsPool.Length)
+            return;
+
+        decorsPool[(int)typeObj].CreerObject(position, Quaternion.identity);
     }
 
 }

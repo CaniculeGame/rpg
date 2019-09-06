@@ -206,16 +206,6 @@ public class GuiManager : MonoBehaviour
         connectionGui.gameObject.SetActive(true);
     }
 
-    public void CacherConnection()
-    {
-
-    }
-
-
-    public void CacherCreationMj()
-    {
-
-    }
 
     public void AfficherCreationMj()
     {
@@ -230,10 +220,7 @@ public class GuiManager : MonoBehaviour
         connectionGui.gameObject.SetActive(false);
     }
 
-    public void CacherCreationJoueur()
-    {
 
-    }
 
     public void AfficherCreationJoueur()
     {
@@ -249,10 +236,6 @@ public class GuiManager : MonoBehaviour
     }
 
 
-    public void CacherChoixPersonnage()
-    {
-
-    }
 
     public void AfficherChoixPersonnage()
     {
@@ -270,7 +253,7 @@ public class GuiManager : MonoBehaviour
 
     public void Connection()
     {
-
+        
         AfficherChoixPersonnage();
     }
 

@@ -1,4 +1,6 @@
-﻿public class ElementGeneric
+﻿using UnityEngine;
+
+public class ElementGeneric : MonoBehaviour
 {
     public enum TYPE_ELEMENT : uint
     {
@@ -6,13 +8,15 @@
         TYPE_ELEMENT_PERSONNAGE = 1,
         TYPE_ELEMENT_PNJ = 2,
         TYPE_ELEMENT_OBJET = 3,
-        TYPE_ELEMENT_MAX = 4,
+        TYPE_ELEMENT_MAX,
     }
 
+    public TYPE_ELEMENT typeElement;
+    public uint idElment;
 
-    private TYPE_ELEMENT typeElement;
-    private uint idElment;
-
+    public int height;
+    public int widh;
+    public int hauteur;
 
     public uint DonnerIdElement { get { return idElment; } }
     public TYPE_ELEMENT DonnerTypeElement { get { return typeElement; }}
@@ -23,13 +27,21 @@
     {
         typeElement = TYPE_ELEMENT.TYPE_ELEMENT_AUCUN;
         idElment = 0;
+
+        height = 1;
+        widh = 1;
+        hauteur = 1;
     }
 
 
-    public ElementGeneric(TYPE_ELEMENT elt, uint id)
+    public ElementGeneric(TYPE_ELEMENT elt, uint id, int h = 1, int w = 1, int l = 1)
     {
         typeElement = elt;
         idElment = id;
+
+        height = h;
+        widh = w;
+        hauteur = l;
     }
 
 }
