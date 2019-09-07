@@ -55,6 +55,7 @@ public class Carte
 
     private void LireFichierCarte(string pth)
     {
+        return; /* A faire*/
 
         string[] lines;
 

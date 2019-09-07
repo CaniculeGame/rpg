@@ -149,11 +149,14 @@ public class GenerateWorld : MonoBehaviour
                     if (obj != null && obj.tag == "grid")
                     {
                         Vector3 newPos = obj.position;
-                        InstanciateObjet((TYPE_OBJET)objSelection, newPos);
+                        GameObject go = InstanciateObjet((TYPE_OBJET)objSelection, newPos);
 
                         int x = Mathf.FloorToInt(newPos.x);
                         int y = Mathf.FloorToInt(newPos.z);
-                        carte.DonnerCellule(x, y).AjouterElement(new ElementGeneric(ElementGeneric.TYPE_ELEMENT.TYPE_ELEMENT_OBJET, (uint)objSelection));
+
+
+                        ElementGeneric elt = go.GetComponent<ElementGeneric>();
+                        carte.DonnerCellule(x, y).AjouterElement(elt);
                     }
                 }
 
@@ -311,15 +314,22 @@ public class GenerateWorld : MonoBehaviour
 
 
 
-    public void InstanciateObjet(TYPE_OBJET typeObj,  Vector3 position)
+    public GameObject InstanciateObjet(TYPE_OBJET typeObj,  Vector3 position)
     {
         if (decorsPool == null)
-            return;
+            return null;
 
         if ((int)typeObj >= decorsPool.Length)
-            return;
+            return null;
 
-        decorsPool[(int)typeObj].CreerObject(position, Quaternion.identity);
+
+        GameObject go = decorsPool[(int)typeObj].CreerObject(position, Quaternion.identity);
+
+        /* pansement */
+        if(typeObj != TYPE_OBJET.TYPE_OBJET_2)
+            go.transform.Rotate(new Vector3(270, 0, 0));
+
+        return go;
     }
 
 }
