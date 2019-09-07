@@ -17,6 +17,8 @@ public class GenerateWorld : MonoBehaviour
 
     public GameObject plane;
     public GameObject[] decors;
+    public TerrainLayer[] terrainLayers;
+    public Texture2D[] terrainTextures;
 
     public int _x = 10;
     public int _y = 10;
@@ -208,6 +210,26 @@ public class GenerateWorld : MonoBehaviour
         TerrainData terrainData = new TerrainData();
         terrainData.size = new Vector3(carte.Xmax, 100, carte.Ymax);
         GameObject terrain = Terrain.CreateTerrainGameObject(terrainData);
+
+
+        /* choix texture principale */
+        terrainData.terrainLayers = terrainLayers;
+        float[,,] map = new float[terrainData.alphamapWidth, terrainData.alphamapHeight, terrainLayers.Length];
+        for (int y = 0; y < terrainData.alphamapHeight; y++)
+        {
+            for (int x = 0; x < terrainData.alphamapWidth; x++)
+            {
+                for(int i = 0; i < terrainLayers.Length; i++)
+                {
+                    if(i == (int)carte.Terrain-1)
+                        map[x, y, i] = 1;
+                    else
+                        map[x, y, i] = 0;
+                }
+            }
+        }
+        terrainData.SetAlphamaps(0,0, map);
+
     }
 
     public void AfficherGrid(bool afficher)

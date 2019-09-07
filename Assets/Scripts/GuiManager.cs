@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class GuiManager : MonoBehaviour
@@ -179,7 +180,9 @@ public class GuiManager : MonoBehaviour
         uint y = uint.Parse(newCarteGui.transform.GetChild(4).GetChild(2).GetComponent<Text>().text);
         string nom = newCarteGui.transform.GetChild(5).GetChild(2).GetComponent<Text>().text;
 
-        Carte newCarte = new Carte(null,nom,x, y);
+
+        int typeTerrain = newCarteGui.transform.GetChild(9).GetComponent<Dropdown>().value + 1;
+        Carte newCarte = new Carte(null,nom,x, y, (Carte.TYPE_TERRAIN) typeTerrain);
         GameManage.DonnerInstance.NouvelleCarte(newCarte);
 
     }
@@ -264,6 +267,15 @@ public class GuiManager : MonoBehaviour
     }
 
 
+    public void GuiDecorsSelection(int id)
+    {
+        Transform go = mjGui.transform.GetChild(0).GetChild(1).GetChild(1);
+
+        if (id >= go.childCount)
+            return;
+
+        EventSystem.current.SetSelectedGameObject(go.GetChild(id).gameObject);
+    }
 
 
 

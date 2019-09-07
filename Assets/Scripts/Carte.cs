@@ -12,19 +12,33 @@ xn;yn:hauteur:typeElement:idElement
 
 public class Carte 
 {
+    public enum  TYPE_TERRAIN : int
+    {
+        TYPE_TERRAIN_AUCUN = 0,
+        TYPE_TERRAIN_PLAINE = 1,
+        TYPE_TERRAIN_DESERT = 2,
+        TYPE_TERRAIN_TROPICAL = 3,
+        TYPE_TERRAIN_POLAIRE = 4,
+        TYPE_TERRAIN_MAX
+    }
+
+
     private Cellule[,] carte;
     private uint maxX;
     private uint maxY;
     private string name;
     private string path;
+    private TYPE_TERRAIN typeTerrain;
 
-    public Carte(string pth, string nom , uint xMax, uint yMax)
+    public Carte(string pth, string nom , uint xMax, uint yMax, TYPE_TERRAIN type = TYPE_TERRAIN.TYPE_TERRAIN_PLAINE)
     {
         maxX = xMax;
         maxY = yMax;
 
         name = nom;
         path = pth;
+
+        typeTerrain = type;
 
         carte = new Cellule[maxX, maxY];
         GameManage.DonnerInstance.Action = GameManage.ACTION_TYPE.ACTION_TYPE_CHANGEMENT_CARTE;
@@ -127,6 +141,7 @@ public class Carte
     public uint Ymax { get { return maxY; } set { maxY = value; } }
     public string Name { get { return name; } set { name = value; } }
     public string Path { get { return path; } set { path = value; } }
+    public TYPE_TERRAIN Terrain { get { return typeTerrain; } set { typeTerrain = value; } }
 
     public Cellule DonnerCellule(int x, int y)
     {
