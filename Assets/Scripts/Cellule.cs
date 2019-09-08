@@ -24,7 +24,7 @@ public class Cellule
         return str;
     }
 
-    public bool EstOccupe { get { return estOccupe; } }
+    public bool EstOccupe { get { return estOccupe; } set { estOccupe = value; } }
     public int Hauteur { get { return hauteur; } set { hauteur = value; } }
 
     public void AjouterElement(ElementGeneric elt)

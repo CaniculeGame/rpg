@@ -14,7 +14,7 @@ public class GenerateWorld : MonoBehaviour
         TYPE_OBJET_MAX
     }
 
-
+    public Material[] materialPlane;
     public GameObject plane;
     public GameObject[] decors;
     public TerrainLayer[] terrainLayers;
@@ -61,7 +61,8 @@ public class GenerateWorld : MonoBehaviour
                 if (carte.DonnerCellule(i, j) != null &&
                     carte.DonnerCellule(i, j).EstOccupe)
                 {
-                    int ht = carte.DonnerCellule(i, j).Hauteur;
+                    // si occuper, couleur rouge 
+
                 }
             }
 
@@ -157,6 +158,32 @@ public class GenerateWorld : MonoBehaviour
 
                         ElementGeneric elt = go.GetComponent<ElementGeneric>();
                         carte.DonnerCellule(x, y).AjouterElement(elt);
+
+                        if(GameManage.DonnerInstance.Carte.DonnerCellule(x, y) != null)
+                            if (GameManage.DonnerInstance.Carte.DonnerCellule(x, y).EstOccupe)
+                                obj.GetComponent<Renderer>().material = materialPlane[1];
+                            else
+                                obj.GetComponent<Renderer>().material = materialPlane[0];
+
+                        /* condanation des cellules occupées par le mesh */
+                        int h = elt.height;
+                        int w = elt.widh;
+
+                        int i = 0;
+                        int j = 0;
+                        for (i = 0; i < w; i++)
+                        {
+                            for (j = 0; j < h; j++)
+                            {
+                                carte.DonnerCellule(x+i, y+j).EstOccupe = true;
+                            }
+                        }
+                        if (i != 0)
+                        {
+                            ShowGrid(false);
+                            ShowGrid(true);
+                        }
+
                     }
                 }
 
@@ -190,7 +217,12 @@ public class GenerateWorld : MonoBehaviour
         {
             case ElementGeneric.TYPE_ELEMENT.TYPE_ELEMENT_OBJET:
                 if (id >= 0 && id < decorsPool.Length)
+                {
+                    GameManage.DonnerInstance.Carte.DonnerCellule((int)obj.position.x, (int)obj.position.z).EstOccupe = false;
                     decorsPool[id].SupprimerObject(obj.gameObject);
+                    ShowGrid(false);
+                    ShowGrid(true);
+                }
             break;
 
             default:
@@ -270,7 +302,14 @@ public class GenerateWorld : MonoBehaviour
             {
                 for (int j = 0; j < _y * mult; j++)
                 {
-                        grid.CreerObject(new Vector3(origineX + i * _h, 0.1f, origineY + j * _w), Quaternion.identity);
+                    GameObject go = grid.CreerObject(new Vector3(origineX + i * _h, 0.1f, origineY + j * _w), Quaternion.identity);
+                    if(go != null)
+                    {
+                        if (GameManage.DonnerInstance.Carte.DonnerCellule(i, j).EstOccupe)
+                            go.GetComponent<Renderer>().material = materialPlane[1];
+                        else
+                            go.GetComponent<Renderer>().material = materialPlane[0];
+                    }
                 }
             }
         }

@@ -11228,7 +11228,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9d66e346918cd546b10616e827d3c81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plane: {fileID: 6550475110390330122, guid: 2fe2818e9cb9c724495312d75cd52ff3, type: 3}
+  materialPlane:
+  - {fileID: 2100000, guid: c529f489a9c105d47a40f329baaadb48, type: 2}
+  - {fileID: 2100000, guid: d9e13ede28bfaf54d99a88f104fd57b8, type: 2}
+  plane: {fileID: 6884374297270377181, guid: 2fe2818e9cb9c724495312d75cd52ff3, type: 3}
   decors:
   - {fileID: 7765190896219846443, guid: cd80aeaa105a07f489f536596fd0a488, type: 3}
   - {fileID: 5157179188934862077, guid: 78412bd64e70d244f8f6aefed922e158, type: 3}
