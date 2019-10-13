@@ -28,9 +28,10 @@ public class Carte
     private uint maxY;
     private string name;
     private string path;
+    private int sizeCase;
     private TYPE_TERRAIN typeTerrain;
 
-    public Carte(string pth, string nom , uint xMax, uint yMax, TYPE_TERRAIN type = TYPE_TERRAIN.TYPE_TERRAIN_PLAINE)
+    public Carte(string pth, string nom , uint xMax, uint yMax, int sizeTill = 1, TYPE_TERRAIN type = TYPE_TERRAIN.TYPE_TERRAIN_PLAINE)
     {
         maxX = xMax;
         maxY = yMax;
@@ -40,16 +41,21 @@ public class Carte
 
         typeTerrain = type;
 
+        sizeCase = sizeTill;
+
         carte = new Cellule[maxX, maxY];
-        GameManage.DonnerInstance.Action = GameManage.ACTION_TYPE.ACTION_TYPE_CHANGEMENT_CARTE;
+        for (int x = 0; x < maxX; x++)
+            for (int y = 0; y < yMax; y++)
+                DonnerCellule(x, y);
     }
 
     public Carte(string pth)
     {
+
         if (pth == null)
             return;
 
-        LireFichierCarte(pth);
+        /*LireFichierCarte(pth);*/
     }
 
 
@@ -57,7 +63,7 @@ public class Carte
     {
         return; /* A faire*/
 
-        string[] lines;
+       string[] lines;
 
         if (pth == null)
             return;
@@ -96,7 +102,7 @@ public class Carte
                 uint id = uint.Parse(str[4]);
 
                 ElementGeneric elt = new ElementGeneric((ElementGeneric.TYPE_ELEMENT)typeElt, id);
-                carte[xcel, ycel] = new Cellule();
+               /* carte[xcel, ycel] = new Cellule();*/
                 carte[xcel, ycel].AjouterElement(elt);
                 carte[xcel, ycel].Hauteur = ht;
             }
@@ -138,6 +144,7 @@ public class Carte
         File.AppendAllLines(path, lines.ToArray());
     }
 
+    public int  SizeCase { get { return sizeCase; } set { sizeCase = value; } }
     public uint Xmax { get { return maxX; } set { maxX = value; } }
     public uint Ymax { get { return maxY; } set { maxY = value; } }
     public string Name { get { return name; } set { name = value; } }
@@ -155,7 +162,7 @@ public class Carte
 
         if(carte[x,y] == null)
         {
-            carte[x, y] = new Cellule();
+            carte[x, y] = new Cellule(x,y,false);
         }
 
         return carte[x, y];

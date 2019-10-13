@@ -3,29 +3,35 @@
 
 public class Cellule
 {
-    private bool estOccupe = false;
-
     List<ElementGeneric> elements;
     private int hauteur = 0;
+    private Noeud noeud;
 
-    public Cellule()
+
+    public Cellule(int x, int y, bool walkable)
     {
         hauteur = 0;
+        noeud = new Noeud(walkable, x, y);
+
     }
 
     public string Element()
     {
-        string str= "";
+        string str = "";
         foreach (ElementGeneric elt in elements)
         {
-            str += elt.DonnerTypeElement.ToString()+":"+elt.DonnerIdElement.ToString();
+            str += elt.DonnerTypeElement.ToString() + ":" + elt.DonnerIdElement.ToString();
         }
 
         return str;
     }
 
-    public bool EstOccupe { get { return estOccupe; } set { estOccupe = value; } }
+    public bool EstOccupe { get { return noeud.EstOccupe; } set { noeud.EstOccupe = value; } }
     public int Hauteur { get { return hauteur; } set { hauteur = value; } }
+    public Noeud Node{ get{ return noeud;} set { noeud = value;}}
+    public int X { get { return noeud.x; } set { noeud.x = value; } }
+    public int Y { get { return noeud.y; } set { noeud.y = value; } }
+    public Noeud Parent { get { return noeud.parent; } set { noeud.parent = value; } }
 
     public void AjouterElement(ElementGeneric elt)
     {
@@ -33,7 +39,7 @@ public class Cellule
             elements = new List<ElementGeneric>();
 
         elements.Add(elt);
-        estOccupe = true;
+        EstOccupe = true;
     }
 
     public void SupprimerElement(ElementGeneric elt)
@@ -44,6 +50,6 @@ public class Cellule
         elements.Remove(elt);
 
         if(elements.Count <= 0)
-            estOccupe = false;
+            EstOccupe = false;
     }
 }

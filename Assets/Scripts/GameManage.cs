@@ -45,6 +45,8 @@ public class GameManage
     private CAMERA_TYPE cameraType = CAMERA_TYPE.CAMERA_TYPE_AUCUN;
     private ACTION_TYPE actionType = ACTION_TYPE.ACTION_TYPE_AUCUN;
     private Carte carte = null;
+    private bool avecDiagonale = false;
+
 
 
 
@@ -106,7 +108,11 @@ public class GameManage
     public void ChargerCarte(string path)
     {
         carte = new Carte(path);
-        actionType = ACTION_TYPE.ACTION_TYPE_CHANGEMENT_CARTE;
+
+        Carte crte = new Carte(null, "test", 30, 30, 1,Carte.TYPE_TERRAIN.TYPE_TERRAIN_PLAINE);
+        GameManage.DonnerInstance.Diagonale = false;
+        GameManage.DonnerInstance.Action = GameManage.ACTION_TYPE.ACTION_TYPE_CHANGEMENT_CARTE;
+        GameManage.DonnerInstance.Carte = crte;
     }
 
     public void SavegarderCarte(string path)
@@ -116,9 +122,14 @@ public class GameManage
 
     public void NouvelleCarte(Carte crte)
     {
-
         carte = null;
         carte = crte;
+    }
+
+    public bool Diagonale
+    {
+        get { return avecDiagonale; }
+        set { avecDiagonale = value; }
     }
 
 

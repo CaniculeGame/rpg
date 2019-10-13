@@ -18,6 +18,21 @@ public class GuiManager : MonoBehaviour
     public Camera[] cameras;
 
 
+    public static Transform SelectObjet(Vector3 position)
+    {
+        Transform obj = null;
+
+        Ray ray = Camera.main.ScreenPointToRay(position);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 200))
+            obj = hit.transform;
+
+
+        return obj;
+    }
+
+
     public void Start()
     {
         mjGui.gameObject.SetActive(false);
@@ -44,6 +59,17 @@ public class GuiManager : MonoBehaviour
 
         GameManage.DonnerInstance.Mode = GameManage.MODE.MODE_NORMAL;
         GameManage.DonnerInstance.Role = GameManage.ROLE.ROLE_JOUEUR;
+
+
+        string path;
+
+#if UNITY_ANDROID
+        path =;
+#else
+        path = Application.dataPath + "/Resources/Cartes/Carte1.txt";
+#endif
+
+        GameManage.DonnerInstance.ChargerCarte(path);
     }
 
     public void StartMj()
@@ -182,7 +208,7 @@ public class GuiManager : MonoBehaviour
 
 
         int typeTerrain = newCarteGui.transform.GetChild(9).GetComponent<Dropdown>().value + 1;
-        Carte newCarte = new Carte(null,nom,x, y, (Carte.TYPE_TERRAIN) typeTerrain);
+        Carte newCarte = new Carte(null,nom,x, y, 1, (Carte.TYPE_TERRAIN) typeTerrain);
         GameManage.DonnerInstance.NouvelleCarte(newCarte);
 
     }
@@ -274,7 +300,7 @@ public class GuiManager : MonoBehaviour
         if (id >= go.childCount)
             return;
 
-        EventSystem.current.SetSelectedGameObject(go.GetChild(id).gameObject);
+        EventSystem.current.SetSelectedGameObject(go.GetChild(id).gameObject); /* a faire */
     }
 
 
