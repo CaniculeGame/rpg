@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoubleClick : MonoBehaviour
+public class DoubleClick 
 {
 
     public bool one_click = false;

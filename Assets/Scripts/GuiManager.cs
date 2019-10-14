@@ -28,10 +28,25 @@ public class GuiManager : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 200))
             obj = hit.transform;
 
-
         return obj;
     }
 
+
+    public void AfficherUiObjet(GameObject obj)
+    {
+        if (obj == null)
+            return;
+
+        mjGui.transform.GetChild(3).gameObject.SetActive(true);
+        /* mettre à jour valeur*/
+        mjGui.transform.GetChild(3).GetChild(0).GetComponentInChildren<Text>().text = obj.name.ToString();
+    }
+
+    public void CacherUiObjet()
+    {
+
+        mjGui.transform.GetChild(3).gameObject.SetActive(false);
+    }
 
     public void Start()
     {
@@ -154,7 +169,6 @@ public class GuiManager : MonoBehaviour
         }
     }
 
-
     public void MainMenu()
     {
         mjGui.gameObject.SetActive(false);
@@ -171,7 +185,6 @@ public class GuiManager : MonoBehaviour
         GameManage.DonnerInstance.Role = GameManage.ROLE.ROLE_AUCUN;
     }
 
-
     public void AfficherFichePerso()
     {
         jGui.transform.GetChild(1).gameObject.SetActive(true);
@@ -185,7 +198,6 @@ public class GuiManager : MonoBehaviour
         jGui.transform.GetChild(1).gameObject.SetActive(false);
         jGui.transform.GetChild(0).gameObject.SetActive(true);
     }
-
 
     public void AfficherCreerCarte()
     {
@@ -221,7 +233,6 @@ public class GuiManager : MonoBehaviour
         newCarteGui.gameObject.SetActive(false);
     }
 
-
     public void AfficherConnection()
     {
         mjGui.gameObject.SetActive(false);
@@ -235,7 +246,6 @@ public class GuiManager : MonoBehaviour
         connectionGui.gameObject.SetActive(true);
     }
 
-
     public void AfficherCreationMj()
     {
         mjGui.gameObject.SetActive(false);
@@ -248,9 +258,7 @@ public class GuiManager : MonoBehaviour
         creationJoueurGui.gameObject.SetActive(false);
         connectionGui.gameObject.SetActive(false);
     }
-
-
-
+   
     public void AfficherCreationJoueur()
     {
         mjGui.gameObject.SetActive(false);
@@ -263,8 +271,6 @@ public class GuiManager : MonoBehaviour
         creationJoueurGui.gameObject.SetActive(true);
         connectionGui.gameObject.SetActive(false);
     }
-
-
 
     public void AfficherChoixPersonnage()
     {
@@ -279,7 +285,6 @@ public class GuiManager : MonoBehaviour
         connectionGui.gameObject.SetActive(false);
     }
 
-
     public void Connection()
     {
         
@@ -291,7 +296,6 @@ public class GuiManager : MonoBehaviour
 
         AfficherConnection();
     }
-
 
     public void GuiDecorsSelection(int id)
     {
