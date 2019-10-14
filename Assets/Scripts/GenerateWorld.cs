@@ -108,7 +108,7 @@ public class GenerateWorld : MonoBehaviour
             return;
 
         if (GameManage.DonnerInstance.Role == GameManage.ROLE.ROLE_JOUEUR)
-            AfficherGrid(false);
+            AfficherGrid(true);
 
         if (GameManage.DonnerInstance.Action == GameManage.ACTION_TYPE.ACTION_TYPE_CHANGEMENT_CARTE)
         {
@@ -119,7 +119,9 @@ public class GenerateWorld : MonoBehaviour
             ViderWorld();
             SupprimerTerrain();
             NouveauTerrain();
+            AfficherGrid(true);
             GameManage.DonnerInstance.Action = GameManage.ACTION_TYPE.ACTION_TYPE_AUCUN;
+
         }
 
         if (aChanger)
@@ -131,8 +133,7 @@ public class GenerateWorld : MonoBehaviour
 
         if (GameManage.DonnerInstance.Mode == GameManage.MODE.MODE_CONSTRUCTION)
         {
-            if (!grilleEstAfficher)
-                ShowGrid(true);
+            AfficherGrid(true);
 
             Carte carte = GameManage.DonnerInstance.Carte;
             if (Input.GetMouseButtonUp(0) || Input.touchCount > 0)
@@ -258,7 +259,10 @@ public class GenerateWorld : MonoBehaviour
 
     public void AfficherGrid(bool afficher)
     {
-        ShowGrid(afficher);
+        if (afficher == false && grilleEstAfficher)
+            ShowGrid(false);
+        else if(afficher == true && !grilleEstAfficher)
+            ShowGrid(true);
     }
 
     public void SwitchGrid()

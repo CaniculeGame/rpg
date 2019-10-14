@@ -55,7 +55,7 @@ public class Carte
         if (pth == null)
             return;
 
-        /*LireFichierCarte(pth);*/
+        LireFichierCarte(pth);
     }
 
 
@@ -160,6 +160,7 @@ public class Carte
         if (x >= maxX || y >= maxY)
             return null;
 
+        /* nouvelle cellule*/
         if(carte[x,y] == null)
         {
             carte[x, y] = new Cellule(x,y,false);

@@ -8,11 +8,10 @@ public class Cellule
     private Noeud noeud;
 
 
-    public Cellule(int x, int y, bool walkable)
+    public Cellule(int x, int y, bool estOccupe)
     {
         hauteur = 0;
-        noeud = new Noeud(walkable, x, y);
-
+        noeud = new Noeud(estOccupe, x, y);
     }
 
     public string Element()

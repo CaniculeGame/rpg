@@ -10,22 +10,22 @@ public class Astar : MonoBehaviour
 	
 	public static List<Noeud> FindPath( Carte param_graphe, Noeud param_start, Noeud param_end, bool avecDiagonale )
 	{
-		// on crée les listes fermées et les listes ouvertes
-		m_openList = new List<Noeud>();
+        Debug.Log("Depart : "+ param_start.x +"," + param_start.y + "   arrive :" + param_end.x +"," + param_end.y);
+
+
+        // on crée les listes fermées et les listes ouvertes
+        m_openList  = new List<Noeud>();
 		m_closeList = new List<Noeud>();
 		
 		// on crée la variable qui va accueillir le chemin final
 		List<Noeud> finalPath= new List<Noeud>();
 
-		//Debug.Log(param_graphe.MapCeil(16,12).GetCelluleX());
-		//Debug.Log(param_graphe.MapCeil(16,12).GetCelluleY());
-		//Debug.Log(param_graphe.MapCeil(16,12).walkable());
 
 		//  traitement
 		//ajout noeud de départ à liste ouverte
 		m_openList.Add(param_start);
 		Noeud courant = null;
-		//tnat qie la list est pas nul faire
+		//tant que la list est pas nul faire
 		while(m_openList.Count > 0)
 		{
 
@@ -33,30 +33,35 @@ public class Astar : MonoBehaviour
 			courant = getNoeudcourant();
 
 			//Stopper la boucle si arrivé
-			if( courant == param_end ) 
+			if( courant.x == param_end.x && courant.y == param_end.y) 
 			{
 //				Debug.Log("arriver");
 				break;
 			}
 
-			//Basculler courrant ds liste ouverte vers liste fermé
+			//Basculler courrant de liste ouverte vers liste fermé
 			m_closeList.Add(courant);
 			m_openList.Remove(courant);
 
-			//pour chacun des 8 ou 4 noeuds adjacent au noeud courant faire:
-			List<Noeud> voisin;
-			voisin = ObtenirVoisin(param_graphe, courant, avecDiagonale);
+			//pour chacun des 8 ou 4 noeuds adjacents au noeud courant faire:
+			List<Noeud> voisin = ObtenirVoisin(param_graphe, courant, avecDiagonale);
 //			Debug.Log("voisin= "+voisin.Count);
 			foreach(Noeud elem in voisin)
 			{
-				// si elem est un obstacle ou est dans la liste fermet on passe au suivant
-				if(elem.EstOccupe == true || m_closeList.Contains(elem)== true)
+				// si elem est un obstacle 
+				if(elem.EstOccupe == true) 
 				{
-					//Debug.Log("obstacle");
+					Debug.Log("obstacle");
 					continue;
 				}
+                // si elem  est dans la liste fermé on passe au suivant
+                if (m_closeList.Contains(elem) == true)
+                {
+                    //Debug.Log("est dans liste");
+                    continue;
+                }
 
-				//si elem n'est pas dans la liste ouverte : l'ajouter et faire les mise à jour adequat
+				//si elem n'est pas dans la liste ouverte : l'ajouter et faire les mises à jour adequates
 				if(m_openList.Contains(elem)== false)
 				{
 					elem.g=elem.parent.g + param_graphe.SizeCase;
@@ -68,7 +73,7 @@ public class Astar : MonoBehaviour
 				}
 				else //si deja dans la liste on met a jour 
 				{
-					int gAncien = elem.g;
+					int gAncien  = elem.g;
 					int gNouveau = elem.parent.g + param_graphe.SizeCase;
 
 					if(gNouveau<gAncien)
@@ -77,7 +82,7 @@ public class Astar : MonoBehaviour
 						elem.g = gNouveau;
 						elem.h = Distance(elem,param_end,avecDiagonale)*param_graphe.SizeCase;
 						elem.ActuPoid();
-					//	Debug.Log("maj");
+						//Debug.Log("maj");
 					}
 				}
 			}
@@ -87,22 +92,16 @@ public class Astar : MonoBehaviour
 		if( m_openList.Count == 0 )
 			return null;
 		
-		
-		
-		//on construit le chemin: marche pas?
-		Noeud DernierNoeud = param_end;
-		while( DernierNoeud != param_start)
+		//on construit le chemin
+		Noeud DernierNoeud = courant;
+        while (DernierNoeud.x != param_start.x || DernierNoeud.y != param_start.y)
 		{
-//				Debug.Log(DernierNoeud);
 				finalPath.Add(DernierNoeud);
 				DernierNoeud = DernierNoeud.parent;
 		}
 
-
 		finalPath.Reverse();
 		return finalPath;
-		//return null;
-
 	}
 
 
@@ -120,7 +119,7 @@ public class Astar : MonoBehaviour
         if (x < 0 || y < 0)
             return false;
 
-        if (x > xM || y > yM)
+        if (x >= xM || y >= yM)
             return false;
 
         return true;
@@ -133,8 +132,8 @@ public class Astar : MonoBehaviour
         int xDepart = n.x;
         int yDepart = n.y;
 
-        int xMax = (int)carte.Xmax-1;
-        int yMax = (int)carte.Ymax-1;
+        int xMax = (int)carte.Xmax;
+        int yMax = (int)carte.Ymax;
 
 
         for (int x = xDepart - 1; x <= xDepart + 1; x++)
@@ -154,11 +153,8 @@ public class Astar : MonoBehaviour
                        x == xDepart + 1 && y == yDepart - 1)
                         continue;
 
-                /*if (carte.DonnerCellule(x, y) != null && carte.DonnerCellule(x, y).EstOccupe)
-                    continue;
-                    */
-
-                voisins.Add(carte.DonnerCellule(x, y).Node);
+                Noeud node = carte.DonnerCellule(x, y).Node;
+                voisins.Add(node);
             }
         }
 
