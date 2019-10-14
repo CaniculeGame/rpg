@@ -12,10 +12,7 @@ public class HeroController : MonoBehaviour
     public int pa = 10;
     public int paMax = 5;
 
-    public  bool one_click = false;
-    public bool timer_running;
-    public float timer_for_double_click;
-    public float delay = 0.05f;
+    public DoubleClick doubleCLick;
 
     float vitesse = 4f;
 
@@ -27,6 +24,7 @@ public class HeroController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        doubleCLick = new DoubleClick();
         animator = this.GetComponent<Animator>();
         vie = 100;
     }
@@ -43,7 +41,7 @@ public class HeroController : MonoBehaviour
             return;
         }
 
-        var vertical   = Input.GetAxis("Vertical");
+        var vertical = Input.GetAxis("Vertical");
         var horizontal = Input.GetAxis("Horizontal");
 
         bool shift = Input.GetKey(KeyCode.LeftShift);
@@ -82,15 +80,9 @@ public class HeroController : MonoBehaviour
             obj = GuiManager.SelectObjet(Input.touches[0].position;
 #endif
 
-            if (!one_click)
-            {
-                one_click = true;
-                timer_for_double_click = Time.time;
-            }
-            else
-            {
-                one_click = false;
 
+             if (doubleCLick.DoubleClic())
+             {
                 /* deplacement */
                 if (!deplacementEnCours)
                 {
@@ -99,8 +91,8 @@ public class HeroController : MonoBehaviour
                     if (Physics.Raycast(ray, out hit))
                         positionCible = hit.point - transform.position;
 
-                    Noeud depart = new Noeud(true,Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.z));
-                    Noeud arrive = new Noeud(true,Mathf.FloorToInt(positionCible.z), Mathf.FloorToInt(positionCible.z));
+                    Noeud depart = new Noeud(true, Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.z));
+                    Noeud arrive = new Noeud(true, Mathf.FloorToInt(positionCible.z), Mathf.FloorToInt(positionCible.z));
 
                     if (arrive.x < 0)
                         arrive.x = 0;
@@ -108,20 +100,15 @@ public class HeroController : MonoBehaviour
                         arrive.y = 0;
 
                     Carte carte = GameManage.DonnerInstance.Carte;
-                    if(carte!= null)
+                    if (carte != null)
                         chemin = Astar.FindPath(carte, depart, arrive, GameManage.DonnerInstance.Diagonale);
                 }
 
                 deplacementEnCours = true;
                 transform.LookAt(positionCible);
                 positionDepart = transform.position;
-            }
-
-            if (one_click)
-            {
-                if ((Time.time - timer_for_double_click) > delay)
-                    one_click = false;
-            }
+              
+             }
         }
         else if (Input.GetButtonUp("Fire2"))
         {
