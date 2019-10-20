@@ -14,12 +14,13 @@ public class HeroController : MonoBehaviour
 
     public DoubleClick doubleCLick;
 
-    float vitesse = 4f;
+    public float vitesse = 4f;
 
     public bool deplacementEnCours = false;
     public Vector3 positionCible;
     public Vector3 positionDepart;
     public List<Noeud> chemin;
+    private Noeud noeudActuel;
 
     // Use this for initialization
     void Start()
@@ -32,9 +33,10 @@ public class HeroController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+#if !UNITY_EDITOR
         if (GameManage.DonnerInstance.Role != GameManage.ROLE.ROLE_JOUEUR)
             return;
-
+#endif
         if (deplacementEnCours)
         {
             Deplacement();
@@ -80,7 +82,6 @@ public class HeroController : MonoBehaviour
             obj = GuiManager.SelectObjet(Input.touches[0].position;
 #endif
 
-
              if (doubleCLick.DoubleClic())
              {
                 /* deplacement */
@@ -89,10 +90,10 @@ public class HeroController : MonoBehaviour
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                     RaycastHit hit;
                     if (Physics.Raycast(ray, out hit))
-                        positionCible = hit.point - transform.position;
+                        positionCible = hit.point;
 
                     Noeud depart = new Noeud(true, Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.z));
-                    Noeud arrive = new Noeud(true, Mathf.FloorToInt(positionCible.z), Mathf.FloorToInt(positionCible.z));
+                    Noeud arrive = new Noeud(true, Mathf.FloorToInt(positionCible.x), Mathf.FloorToInt(positionCible.z));
 
                     if (arrive.x < 0)
                         arrive.x = 0;
@@ -105,7 +106,6 @@ public class HeroController : MonoBehaviour
                 }
 
                 deplacementEnCours = true;
-                transform.LookAt(positionCible);
                 positionDepart = transform.position;
               
              }
@@ -122,28 +122,90 @@ public class HeroController : MonoBehaviour
     }
 
 
-    public void  Deplacement()
+    private void StopDeplacement()
     {
-        if (!deplacementEnCours)
+        animator.SetInteger("state", 0);
+        deplacementEnCours = false;
+        pm = pmMax;
+        return;
+    }
+
+    // si milieux et mm case
+    private bool EstMilieuxCase(Vector3 pos, Noeud caseDepart, Noeud caseArrivee, float size = 0.5f, float margeErreur = 0.2f)
+    {
+        if (size <= 0)
+            size = 0.5f;
+
+        // meme case
+        if(caseDepart.x == caseArrivee.x && caseDepart.y == caseArrivee.y)
         {
-            deplacementEnCours = true;
-            Noeud depart = new Noeud(true,Mathf.FloorToInt(positionCible.x), Mathf.FloorToInt(positionCible.y));
-            Noeud arrive = new Noeud(true,Mathf.FloorToInt(positionCible.x), Mathf.FloorToInt(positionCible.y));
-            chemin = Astar.FindPath(GameManage.DonnerInstance.Carte, depart, arrive, GameManage.DonnerInstance.Diagonale);
+            //calcul bbox
+            float x, y, h, w = 0;
+            x = caseArrivee.x + size - margeErreur;
+            y = caseArrivee.y + size - margeErreur;
+            w = caseArrivee.x + size + margeErreur;
+            h = caseArrivee.y + size + margeErreur;
+
+            //milieux de la case avec marge erreur
+            if ((pos.x >= x && pos.x < w) 
+                && (pos.z >= y && pos.z < h))
+                return true;
         }
 
-        animator.SetInteger("state", 1);
-        if (positionCible == transform.position || pm <= 0)
+        return false;
+    }
+
+    public void  Deplacement()
+    {
+        // on ne peut plus se deplacer
+        if (pm <= 0)
+            StopDeplacement();
+
+        if (chemin.Count <= 1)
         {
-            deplacementEnCours = false;
-            animator.SetInteger("state", 0);
-            pm = pmMax;
+            StopDeplacement();
             return;
         }
 
-        // calcul vecteur
-        transform.Translate(Vector3.forward * vitesse * Time.deltaTime);
+        //case actuelle
+        Noeud depart = chemin[0];
+        int size = GameManage.DonnerInstance.Carte.SizeCase;
+
+
+#if UNITY_EDITOR
+        string str = "";
+        foreach (Noeud n in chemin)
+        {
+            str += " ; (" + n.x + "," + n.y + ")";
+        }
+        Debug.Log(str);
+#endif
+
+        // recupere la case visé:
+        Noeud arrive = chemin[1];
+        //continue animation
+        animator.SetInteger("state", 1);
+
+        // calcul vecteur : on vise le milieux de la case
+
+        float x = (float)arrive.x + (float)size /2.0f;
+        float z = (float)arrive.y + (float)size /2.0f;
+        Vector3 deplacement = new Vector3(x - this.transform.position.x, 0, z - this.transform.position.z);
+
+        //met a jour deplacement
+        deplacement.Normalize();
+        transform.Translate(deplacement.normalized * vitesse * Time.deltaTime);
         pm = pm - (int)(Vector3.Distance(positionDepart,transform.position)/10);
 
+
+        depart = new Noeud(true, Mathf.FloorToInt(this.transform.position.x), Mathf.FloorToInt(this.transform.position.z));
+        // si arrivé sur case d'arrive, on supprime la case depart
+        if (EstMilieuxCase(this.transform.position, depart, arrive))
+        {
+            if (chemin.Count > 1)
+                chemin.Remove(chemin[0]);
+            else
+                StopDeplacement();
+        }
     }
 }
