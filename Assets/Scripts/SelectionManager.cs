@@ -42,9 +42,9 @@ public class SelectionManager : MonoBehaviour
                     guiManager.GetComponent<GuiManager>().CacherUiObjet();
 
 
-                Debug.Log(Mathf.FloorToInt(hit.transform.position.x)+"  "+Mathf.FloorToInt(hit.transform.position.z));
+                Debug.Log(Mathf.FloorToInt(hit.transform.position.x) + "  " + Mathf.FloorToInt(hit.transform.position.z));
 
-                if ( selectionne != null && doubleClick.DoubleClic())
+                if (selectionne != null && doubleClick.DoubleClic())
                 {
 
                 }

@@ -107,9 +107,6 @@ public class GenerateWorld : MonoBehaviour
         if (GameManage.DonnerInstance.Role == GameManage.ROLE.ROLE_AUCUN)
             return;
 
-        if (GameManage.DonnerInstance.Role == GameManage.ROLE.ROLE_JOUEUR)
-            AfficherGrid(true);
-
         if (GameManage.DonnerInstance.Action == GameManage.ACTION_TYPE.ACTION_TYPE_CHANGEMENT_CARTE)
         {
             aChanger = true;

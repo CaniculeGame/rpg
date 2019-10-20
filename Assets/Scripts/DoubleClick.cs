@@ -5,32 +5,35 @@ using UnityEngine;
 public class DoubleClick 
 {
 
-    public bool one_click = false;
-    public bool timer_running;
-    public float timer_for_double_click;
-    public float delay = 0.05f;
+    private bool premier_clic = false;
+    private bool timer_running;
+    private float timer_for_double_click;
+    public  float delay = 0.025f;
 
-
+    public float Delay { get { return delay; } set { if (value >= 0) delay = value; } }
 
     public bool DoubleClic()
     {
 
-        if (!one_click)
+        // premeiur clic
+        if (!premier_clic)
         {
-            one_click = true;
+            premier_clic = true;
             timer_for_double_click = Time.time;
         }
+        //deuxieme clic
         else
         {
-            one_click = false;
+            premier_clic = false;
+            Debug.Log("sec clic");
             return true;
         }
 
 
-        if (one_click)
+        if (premier_clic)
         {
             if ((Time.time - timer_for_double_click) > delay)
-                one_click = false;
+                premier_clic = false;
         }
 
         return false;

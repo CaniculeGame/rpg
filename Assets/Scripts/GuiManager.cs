@@ -308,5 +308,14 @@ public class GuiManager : MonoBehaviour
     }
 
 
+    private void FixedUpdate()
+    {
+        GameManage game;
 
+        game = GameManage.DonnerInstance;
+        if (game == null)
+            return;
+
+        
+    }
 }

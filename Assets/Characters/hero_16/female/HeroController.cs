@@ -1,89 +1,78 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class HeroController : MonoBehaviour
 {
+    /* gui */
+    public GameObject vieGui;
+    public GameObject paGui;
+    public GameObject pmGui;
+
+    /* animation */
     private Animator animator;
-    public int vie = 100;
-    public int pm = 5;
-    public int pmMax = 5;
-    public int pa = 10;
-    public int paMax = 5;
-
-    public DoubleClick doubleCLick;
-
     public float vitesse = 4f;
 
+    /* Personnage */
+    private int vieActu = 0;
+    public int vieMax   = 100;
+    private int pmActu  = 0;
+    public int pmMax    = 5;
+    private int paActu  = 0;
+    public int paMax    = 5;
+
+    /* gestion action */
+    public DoubleClick doubleCLick;
+
+    /* gestion deplacement */
     public bool deplacementEnCours = false;
     public Vector3 positionCible;
     public Vector3 positionDepart;
     public List<Noeud> chemin;
-    private Noeud noeudActuel;
 
     // Use this for initialization
     void Start()
     {
         doubleCLick = new DoubleClick();
+
         animator = this.GetComponent<Animator>();
-        vie = 100;
+
+        CreerPersonnage(pmMax, paMax, vieMax);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-#if !UNITY_EDITOR
-        if (GameManage.DonnerInstance.Role != GameManage.ROLE.ROLE_JOUEUR)
+        if (GameManage.DonnerInstance.Role == GameManage.ROLE.ROLE_AUCUN)
             return;
-#endif
+
         if (deplacementEnCours)
         {
             Deplacement();
+            MajGUI();
             return;
         }
 
-        var vertical = Input.GetAxis("Vertical");
-        var horizontal = Input.GetAxis("Horizontal");
-
-        bool shift = Input.GetKey(KeyCode.LeftShift);
-
-        animator.SetInteger("vie", vie);
-        if (vie <= 0)
+        animator.SetInteger("vie", vieActu);
+        if (vieActu <= 0)
             return;
 
-
-        if (vertical != 0 || horizontal != 0)
-        {
-            Vector3 pos = this.transform.position;
-            if (shift)
-            {
-                animator.SetInteger("state", 4);
-                this.transform.Translate((-1 * vertical * 2 * Time.deltaTime), 0, (-1 * horizontal * 2 * Time.deltaTime));
-            }
-            else
-            {
-                this.transform.Translate(-1 * vertical * Time.deltaTime, 0, (-1 * horizontal * Time.deltaTime));
-                animator.SetInteger("state", 1);
-            }
-
-
-        }
-        else if (Input.GetButtonUp("Fire1"))
+        if (Input.GetButtonUp("Fire1"))
         {
             Transform obj;
 #if UNITY_EDITOR
 
             obj = GuiManager.SelectObjet(Input.mousePosition);
 #elif UNITY_ANDROID
-            if(Input.touchCount >0)
-                return;
+        if(Input.touchCount >0)
+            return;
 
-            obj = GuiManager.SelectObjet(Input.touches[0].position;
+        obj = GuiManager.SelectObjet(Input.touches[0].position;
 #endif
 
-             if (doubleCLick.DoubleClic())
-             {
+            if (doubleCLick.DoubleClic())
+            {
                 /* deplacement */
                 if (!deplacementEnCours)
                 {
@@ -107,8 +96,7 @@ public class HeroController : MonoBehaviour
 
                 deplacementEnCours = true;
                 positionDepart = transform.position;
-              
-             }
+            }
         }
         else if (Input.GetButtonUp("Fire2"))
         {
@@ -119,14 +107,63 @@ public class HeroController : MonoBehaviour
             animator.SetInteger("state", 0);
         }
 
+        MajGUI();
+
     }
+
+    private void MajGUI()
+    {
+        /* maj pm, pa, vie*/
+        if (pmGui != null)
+        {
+            pmGui.transform.GetChild(1).GetComponent<Slider>().maxValue = pmMax;
+            pmGui.transform.GetChild(1).GetComponent<Slider>().value = pmActu;
+            pmGui.transform.GetChild(2).GetComponent<Text>().text = pmActu + "/" + pmMax;
+        }
+
+        if (paGui != null)
+        {
+            paGui.transform.GetChild(1).GetComponent<Slider>().maxValue = paMax;
+            paGui.transform.GetChild(1).GetComponent<Slider>().value = paActu;
+            paGui.transform.GetChild(2).GetComponent<Text>().text = paActu + "/" + paMax;
+        }
+
+        if (vieGui != null)
+        {
+            vieGui.transform.GetChild(1).GetComponent<Slider>().maxValue = vieMax;
+            vieGui.transform.GetChild(1).GetComponent<Slider>().value = vieActu;
+            vieGui.transform.GetChild(2).GetComponent<Text>().text = vieActu + "/" + vieMax;
+        }
+    }
+
+
+    public void CreerPersonnage(int pm, int pa, int vie)
+    {
+        paMax = pa;
+        pmMax = pm;
+        vieMax = vie;
+
+        pmActu = pmMax;
+        paActu = paMax;
+        vieActu = vieMax;
+
+    }
+
+    public int VieActu { get { return vieActu; } set { if (value >= 0) vieActu = value; } }
+    public int PmActu { get { return pmActu; } set { if (value >= 0) pmActu = value; } }
+    public int PaActu { get { return paActu; } set { if (value >= 0) paActu = value; } }
+    public int VieMax { get { return vieMax; } set { if (value >= 0) vieMax = value; } }
+    public int PmMax { get { return pmMax; } set { if (value >= 0) pmMax = value; } }
+    public int PaMax { get { return paMax; } set { if (value >= 0) paMax = value; } }
+    public float Vitesse { get { return vitesse; } set { if (value >= 0) vitesse = value; } }
 
 
     private void StopDeplacement()
     {
         animator.SetInteger("state", 0);
         deplacementEnCours = false;
-        pm = pmMax;
+        pmActu = pmMax;
+        paActu = paMax;
         return;
     }
 
@@ -158,8 +195,11 @@ public class HeroController : MonoBehaviour
     public void  Deplacement()
     {
         // on ne peut plus se deplacer
-        if (pm <= 0)
+        if (pmActu <= 0 && paActu <=0)
             StopDeplacement();
+
+        if (chemin == null)
+            return;
 
         if (chemin.Count <= 1)
         {
@@ -195,13 +235,18 @@ public class HeroController : MonoBehaviour
         //met a jour deplacement
         deplacement.Normalize();
         transform.Translate(deplacement.normalized * vitesse * Time.deltaTime);
-        pm = pm - (int)(Vector3.Distance(positionDepart,transform.position)/10);
 
 
         depart = new Noeud(true, Mathf.FloorToInt(this.transform.position.x), Mathf.FloorToInt(this.transform.position.z));
         // si arrivé sur case d'arrive, on supprime la case depart
         if (EstMilieuxCase(this.transform.position, depart, arrive))
         {
+            
+            if (PmActu <= 0)
+                paActu -= size;
+            else
+                pmActu -= size;
+
             if (chemin.Count > 1)
                 chemin.Remove(chemin[0]);
             else
